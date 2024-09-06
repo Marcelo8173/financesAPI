@@ -1,6 +1,7 @@
 package com.example.finances.controllers;
 
 import com.example.finances.domain.userDomain.User;
+import com.example.finances.domain.userDomain.userDTO.UserDTO;
 import com.example.finances.services.UserServices;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,20 +21,20 @@ import java.net.URI;
 @Component
 public class UserController {
 
+    private final PasswordEncoder encoder;
     @Autowired
     private UserServices userServices;
-    private final PasswordEncoder encoder;
 
     public UserController(PasswordEncoder encoder) {
         this.encoder = encoder;
     }
 
     @PostMapping
-    public ResponseEntity<User> createUser (@RequestBody @Valid User user) {
+    public ResponseEntity<UserDTO> createUser(@RequestBody @Valid User user) {
         user.setPassword(encoder.encode(user.getPassword()));
         User userSaved = userServices.createUser(user);
 
-//        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(userSaved.getId()).toUri();
-        return ResponseEntity.ok().body(userSaved);
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(userSaved.getId()).toUri();
+        return ResponseEntity.created(uri).body(new UserDTO(userSaved.getName(), userSaved.getEmail()));
     }
 }
