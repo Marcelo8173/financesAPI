@@ -29,8 +29,6 @@ public class SecurityFilter extends OncePerRequestFilter {
 
         if (token != null) {
             var subject = tokenService.validateToken(token);
-            System.out.println(subject);
-
             Optional<UserDetails> optionalUserDetails = userRepository.findByEmail(subject);
             UserDetails userDetails = optionalUserDetails.orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado com o email: " + subject));
 

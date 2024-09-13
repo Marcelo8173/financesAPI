@@ -40,10 +40,6 @@ public class TokenService {
                     .verify(token)
                     .getSubject();
         } catch (JWTVerificationException exception) {
-            Algorithm algorithm = Algorithm.HMAC256(secret);
-
-            System.out.println("aqui"+algorithm);
-
             return "";
         }
     }
